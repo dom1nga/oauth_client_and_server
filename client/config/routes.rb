@@ -1,5 +1,9 @@
 Client::Application.routes.draw do
-  devise_for :users
+  devise_for :users do
+    match "sign_in" => "devise/sessions#new"
+    match "sign_out" => "devise/sessions#destroy"
+    match "sign_up" => "devise/registrations#new"
+  end
 
   root :to => "pages#home"
 
