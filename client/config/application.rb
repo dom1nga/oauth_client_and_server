@@ -39,5 +39,6 @@ module Client
 
     # Enable the asset pipeline
     config.assets.enabled = true
+    config.generators.template_engine :haml
   end
 end
