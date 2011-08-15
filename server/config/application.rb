@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'oauth/rack/oauth_filter'
 
 # If you have a Gemfile, require the default gems, the ones in the
 # current environment and also include :assets gems if in development
@@ -40,5 +41,6 @@ module Server
     # Enable the asset pipeline
     config.assets.enabled = true
     config.generators.template_engine :haml
+    config.middleware.use OAuth::Rack::OAuthFilter
   end
 end
