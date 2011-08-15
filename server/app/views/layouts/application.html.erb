@@ -9,6 +9,13 @@
 <body>
   <p class="notice"><%= notice %></p>
   <p class="alert"><%= alert %></p>
+  <% if user_signed_in? %>
+    <p> You logged as: <%= current_user.email  %>
+    <%= link_to 'Log out', sign_out_path %>
+  <% else %>
+    <%= link_to 'Log in', sign_in_path %>
+    <%= link_to 'Sign up', sign_up_path %>
+  <% end %>
   <%= yield %>
 </body>
 </html>
