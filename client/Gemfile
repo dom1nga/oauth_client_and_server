@@ -4,6 +4,7 @@ gem 'rails', '3.1.0.rc5'
 gem 'mysql2'
 gem 'devise'
 gem 'oa-core'
+gem 'haml'
 
 group :assets do
   gem 'sass-rails', "~> 3.1.0.rc"
