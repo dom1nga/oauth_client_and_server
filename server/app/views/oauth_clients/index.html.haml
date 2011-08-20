@@ -15,7 +15,7 @@
         %td= link_to token.client_application.name, token.client_application.url
         %td= token.authorized_at
         %td
-          - form_tag :controller => 'oauth', :action => 'revoke' do
+          = form_tag :controller => 'oauth', :action => 'revoke' do
             = hidden_field_tag 'token', token.token
             = submit_tag "Revoke!"
 
@@ -30,7 +30,7 @@
     You have the following client applications registered:
 
   - @client_applications.each do |client|
-    - div_for client do
+    = div_for client do
       = link_to client.name, :action => :show, :id => client.id
       = link_to 'Edit', edit_oauth_client_path(client)
       = link_to 'Delete', oauth_client_path(client), :confirm => "Are you sure?", :method => :delete
