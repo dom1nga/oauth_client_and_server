@@ -44,8 +44,8 @@ class ClientApplication < ActiveRecord::Base
   end
 
   # If your application requires passing in extra parameters handle it here
-  def create_request_token(params={})
-    RequestToken.create :client_application => self, :callback_url=>self.token_callback_url
+  def create_request_token
+    RequestToken.create :client_application => self, :callback_url => token_callback_url
   end
 
 protected
