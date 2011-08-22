@@ -130,6 +130,9 @@ GEM
       multi_json (>= 1.0.2)
     warden (1.0.5)
       rack (>= 1.0)
+    warden_oauth (0.1.1)
+      oauth
+      warden (>= 0.8.1)
 
 PLATFORMS
   ruby
@@ -146,3 +149,4 @@ DEPENDENCIES
   sass-rails (~> 3.1.0.rc)
   turn
   uglifier
+  warden_oauth

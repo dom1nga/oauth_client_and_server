@@ -6,6 +6,7 @@ gem 'devise'
 gem 'oa-core'
 gem 'haml'
 gem "oauth-plugin", ">= 0.4.0.pre1"
+gem 'warden_oauth'
 
 group :assets do
   gem 'sass-rails', "~> 3.1.0.rc"
