@@ -192,13 +192,22 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
 
-  # ==> Warden configuration
-  # If you want to use other strategies, that are not supported by Devise, or
-  # change the failure app, you can configure them inside the config.warden block.
-  #
-  # config.warden do |manager|
-  #   manager.failure_app   = AnotherApp
-  #   manager.intercept_401 = false
-  #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
-  # end
+  require 'warden_oauth'
+  config.warden do |manager|
+    manager.oauth(:my_app) do |my_app|
+      my_app.consumer_secret = 'KWkmOA6tk3B5k3FysUmD9I1TZOGdC3b26eCmXHGJ'
+      my_app.consumer_key  = 'c2MNL9nMvK6YCc8HxY8DanrPRcOg1S4ZC5xEbaM5'
+      my_app.options :site => 'http://localhost:3000'
+    end
+    manager.default_strategies(:scope => :user).unshift :my_app_oauth
+  end
+
+  Warden::OAuth.access_token_user_finder(:my_app) do |access_token|
+   # user.email = email
+   #redirect_to :controller => 'account'
+     #User.find_by_access_token_and_access_secret(:token => access_token.token, :secret => access_token.secret).tap do |user|
+       current_user ||= User.create(:access_token => access_token.token, :secret => access_token.secret)
+     #end
+  end
+
 end

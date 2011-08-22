@@ -11,7 +11,7 @@
       = notice
     %p.alert
       = alert
-    - if user_signed_in?
+    - if current_user
       %p
         You logged as:
         = current_user.email
