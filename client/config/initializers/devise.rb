@@ -203,11 +203,10 @@ Devise.setup do |config|
   end
 
   Warden::OAuth.access_token_user_finder(:my_app) do |access_token|
-    data ||= ActiveSupport::JSON.decode(access_token.get('http://localhost:3000/oauth/get_user_data').body)
-    if @user = User.find_by_email(data["email"])
+    if @user = User.find_by_email(access_token.params[:user_email])
         @user
     else
-        User.create!(:email => data["email"], :password => Devise.friendly_token[0,20])
+        User.create!(:email => access_token.params[:user_email], :password => Devise.friendly_token[0,20])
     end
   end
 

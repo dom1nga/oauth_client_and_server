@@ -17,5 +17,5 @@
         = current_user.email
         = link_to 'Log out', sign_out_path
     - else
-      = link_to 'Log in', sign_in_path
+      = link_to 'Log in via My_app', new_user_session_path(:warden_oauth_provider => 'my_app')
     = yield
