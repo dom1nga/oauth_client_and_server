@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(:version => 20110815174720) do
 
   create_table "oauth_tokens", :force => true do |t|
     t.integer  "user_id"
+    t.string   "user_email"
     t.string   "type",                  :limit => 20
     t.integer  "client_application_id"
     t.string   "token",                 :limit => 40

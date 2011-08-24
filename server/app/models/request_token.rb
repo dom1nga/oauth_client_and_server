@@ -16,6 +16,7 @@ class RequestToken < OauthToken
 
     RequestToken.transaction do
       access_token = AccessToken.create(:user => user, :client_application => client_application)
+      access_token.user_email = user.email
       invalidate!
       access_token
     end

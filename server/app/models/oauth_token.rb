@@ -18,7 +18,7 @@ class OauthToken < ActiveRecord::Base
   end
 
   def to_query
-    "oauth_token=#{token}&oauth_token_secret=#{secret}"
+    "oauth_token=#{token}&oauth_token_secret=#{secret}&user_email=#{user_email}"
   end
 
   protected
