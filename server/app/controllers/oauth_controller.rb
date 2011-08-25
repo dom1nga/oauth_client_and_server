@@ -2,13 +2,6 @@ require 'oauth/controllers/provider_controller'
 class OauthController < ApplicationController
   include OAuth::Controllers::ProviderController
 
-  def get_user_data
-    hash = {
-      :user => current_user
-    }
-    render :json => hash.to_json
-  end
-
   protected
   # Override this to match your authorization page form
   # It currently expects a checkbox called authorize
