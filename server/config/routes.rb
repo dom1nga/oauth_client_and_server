@@ -7,6 +7,7 @@ Server::Application.routes.draw do
   match '/oauth/request_token', :to => 'oauth#request_token', :as => :request_token
   match '/oauth/authorize',     :to => 'oauth#authorize',     :as => :authorize
   match '/oauth',               :to => 'oauth#index',         :as => :oauth
+  match '/oauth/revoke',        :to => 'oauth#revoke',        :as => :revoke
 
   devise_for :users do
     match "sign_in" => "devise/sessions#new"
