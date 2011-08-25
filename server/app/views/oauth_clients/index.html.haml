@@ -11,7 +11,7 @@
       %th Issued
       %th &nbsp;
     - @tokens.each do |token|
-      - content_tag_for :tr, token do
+      = content_tag_for :tr, token do
         %td= link_to token.client_application.name, token.client_application.url
         %td= token.authorized_at
         %td
