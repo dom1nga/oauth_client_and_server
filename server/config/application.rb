@@ -42,5 +42,6 @@ module Server
     config.assets.enabled = true
     config.generators.template_engine :haml
     config.middleware.use OAuth::Rack::OAuthFilter
+    config.disable_oauth_authorize_access_page = false
   end
 end
