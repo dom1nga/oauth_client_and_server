@@ -54,12 +54,12 @@
  before_filter :login_or_oauth_required
 
 Для передачи дополнительных параметров клиентскому приложению в access_token-е:
-*добавьте соответствующий параметр в oauth_tokens с помощью миграции
-*добавьте его в app/models/oauth_token.rb (в конкретном примере это user_email)
+* добавьте соответствующий параметр в oauth_tokens с помощью миграции
+* добавьте его в app/models/oauth_token.rb (в конкретном примере это user_email)
  def to_query
    "oauth_token=#{token}&oauth_token_secret=#{secret}&user_email=#{user_email}"
  end
-*после создания access_token-a передайте нужное значение access_token-у в app/models/request_token.rb:
+* после создания access_token-a передайте нужное значение access_token-у в app/models/request_token.rb:
  RequestToken.transaction do
    access_token = AccessToken.create(:user => user, :client_application => client_application)
    access_token.user_email = user.email
