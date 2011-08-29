@@ -1,0 +1,67 @@
+=Настройка сервера:
+
+в Gemfile добавить:
+ gem 'oauth2'
+
+Маршруты для devise:
+ devise_for :users do
+   match "sign_in" => "devise/sessions#new"
+   match "sign_out" => "devise/sessions#destroy"
+   match "sign_up" => "devise/registrations#new"
+ end
+
+Добавьте маршрут:
+ match '/oauth/revoke', :to => 'oauth#revoke', :as => :revoke
+
+Можно добавить ссылку на управление клиентскими приложениями во вьюху:
+ <%= link_to 'Client applications', oauth_clients_path %>
+
+Добавьте в app/controllers/oauth_controller.rb:
+ def authenticate_user(username,password)
+   user = User.find_by_email params[:username]
+   if user && user.valid_password?(params[:password])
+     user
+   else
+     nil
+   end
+ end
+
+Укажите в app/models/client_application.rb в методе oauth_server адрес своего сервера
+
+Добавьте в app/controllers/application_controller.rb
+ def logged_in?
+   user_signed_in?
+ end
+ 
+ def login_required
+   if user_signed_in?
+     @user ||= current_user
+     @access_token ||= OAuth::AccessToken.new(@client_application)
+   else
+     redirect_to new_user_session_path
+   end
+ end
+
+Замените в app/models/client_application.rb
+ def create_request_token
+на
+ def create_request_token arg
+(фейковый параметр, без которого приложение обваливается с ошибкой агрументов)
+
+Замените в app/controllers/oauth_clients_controller.rb
+ before_filter :login_required
+на
+ before_filter :login_or_oauth_required
+
+Для передачи дополнительных параметров клиентскому приложению в access_token-е:
+*добавьте соответствующий параметр в oauth_tokens с помощью миграции
+*добавьте его в app/models/oauth_token.rb (в конкретном примере это user_email)
+ def to_query
+   "oauth_token=#{token}&oauth_token_secret=#{secret}&user_email=#{user_email}"
+ end
+*после создания access_token-a передайте нужное значение access_token-у в app/models/request_token.rb:
+ RequestToken.transaction do
+   access_token = AccessToken.create(:user => user, :client_application => client_application)
+   access_token.user_email = user.email
+   #...
+ end

@@ -1,3 +1,12 @@
-= OAuth client and server apps
+=OAuth клиент и серверное приложение
 
-<b>in process...</b>
+Общие требования Gimfile для обоих приложений:
+
+ gem 'devise', '1.4.2'
+ gem "oauth-plugin", ">= 0.4.0.pre1"
+
+В обоих приложениях установить devise. Иснтрукция: https://github.com/plataformatec/devise
+
+Сгенерируйте oauth_provider для сервера и oauth_consumer для клиента,
+следуя инструкции разработчика гема oauth-plugin:
+https://github.com/pelle/oauth-plugin

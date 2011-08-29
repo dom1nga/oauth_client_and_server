@@ -1,0 +1,55 @@
+=Настройка клиента:
+
+в Gemfile  добавить:
+ gem 'oa-core'
+ gem 'warden_oauth'
+
+Маршруты для devise:
+ devise_for :users do
+   match "sign_in" => "devise/sessions#new"
+   match "sign_out" => "devise/sessions#destroy"
+ end
+
+Содержание модели пользователя:
+ devise :database_authenticatable, :omniauthable, :token_authenticatable
+ attr_accessible :email, :password, :password_confirmation, :remember_me, :access_token, :access_secret
+
+Исправьте в миграции create_oauth_consumer_tokens.rb
+ t.string :token, :limit => 1024
+на
+ t.string :token, :limit => 767
+
+Замените в app/controllers/oauth_consumers_controller.rb
+ before_filter :login_required, :only=>:index
+на
+ before_filter :login_or_oauth_required, :only=>:index
+
+Раскомментируйте определения logged_in? и def current_user=
+
+Добавьте в config/initializers/devise.rb
+ require 'warden_oauth'
+ config.warden do |manager|
+   manager.oauth(:my_app) do |my_app|
+     my_app.consumer_secret = 'KWkmOA6tk3B5k3FysUmD9I1TZOGdC3b26eCmXHGJ'
+     my_app.consumer_key  = 'c2MNL9nMvK6YCc8HxY8DanrPRcOg1S4ZC5xEbaM5'
+     my_app.options :site => 'http://localhost:3000'
+   end
+   manager.default_strategies(:scope => :user).unshift :my_app_oauth
+ end
+ 
+ Warden::OAuth.access_token_user_finder(:my_app) do |access_token|
+   if @user = User.find_by_email(access_token.params[:user_email])
+       @user
+   else
+       User.create!(:email => access_token.params[:user_email], :password => Devise.friendly_token[0,20])
+   end
+ end
+
+Добавьте в config/initializers/oauth_consumers.rb определение своего сервиса, взяв APP_KEY и APP_SECRET из данных клиент приложения в серверном приложении
+ :my_service => {
+   :key => APP_KEY,
+   :secret => APP_SECRET
+ }
+
+Добавьте ссылку на получение пользовательской сессии с помощью серверного приложения:
+ <%= link_to 'Log in via My_app', new_user_session_path(:warden_oauth_provider => 'my_app') %>
