@@ -1,12 +1,66 @@
-=OAuth клиент и серверное приложение
+=Настройка сервера:
+Укажите в app/models/client_application.rb в методе oauth_server адрес своего сервера
+==Передача дополнительных параметров клиентскому приложению
+* добавьте соответствующий параметр в oauth_tokens с помощью миграции
+* добавьте его в app/models/oauth_token.rb (в конкретном примере это user_email)
+ def to_query
+   "oauth_token=#{token}&oauth_token_secret=#{secret}&user_email=#{user_email}"
+ end
+* после создания access_token-a передайте нужное значение access_token-у в app/models/request_token.rb:
+ RequestToken.transaction do
+   access_token = AccessToken.create(:user => user, :client_application => client_application)
+   access_token.user_email = user.email
+   #...
+ end
+==Регистрация клиентского приложения:
+* Перейдите по адресу http://адрес_серверного_приложения/oauth_clients/new
+* Зарегестрируйте клиент-приложение
+* Используйте данные на странице приложения для настройки клиентского приложения
+==Отключение перехода на страницу oauth_authorize_access в конфигурации приложения
+Добавьте в config/application.rb
+ config.disable_oauth_authorize_access_page = true
 
-Общие требования Gimfile для обоих приложений:
-
+=Настройка клиента:
+Gemfile:
+ gem 'oa-core'
+ gem 'warden_oauth'
  gem 'devise', '1.4.2'
  gem "oauth-plugin", ">= 0.4.0.pre1"
-
-В обоих приложениях установить devise. Иснтрукция: https://github.com/plataformatec/devise
-
-Сгенерируйте oauth_provider для сервера и oauth_consumer для клиента,
-следуя инструкции разработчика гема oauth-plugin:
-https://github.com/pelle/oauth-plugin
+В приложении установить devise. Иснтрукция: https://github.com/plataformatec/devise
+Сгенерируйте oauth_consumer для клиента, следуя инструкции разработчика гема oauth-plugin: https://github.com/pelle/oauth-plugin
+Содержание модели пользователя:
+ devise :database_authenticatable, :omniauthable, :token_authenticatable
+ attr_accessible :email, :password, :password_confirmation, :remember_me, :access_token, :access_secret
+Исправьте в миграции create_oauth_consumer_tokens.rb
+ t.string :token, :limit => 1024
+на
+ t.string :token, :limit => 767
+Замените в app/controllers/oauth_consumers_controller.rb
+ before_filter :login_required, :only=>:index
+на
+ before_filter :login_or_oauth_required, :only=>:index
+Раскомментируйте определения logged_in? и def current_user=
+Добавьте в config/initializers/devise.rb данные полученные от серверного приложения:
+ require 'warden_oauth'
+ config.warden do |manager|
+   manager.oauth(:my_app) do |my_app|
+     my_app.consumer_secret = 'KWkmOA6tk3B5k3FysUmD9I1TZOGdC3b26eCmXHGJ'
+     my_app.consumer_key  = 'c2MNL9nMvK6YCc8HxY8DanrPRcOg1S4ZC5xEbaM5'
+     my_app.options :site => 'http://localhost:3000'
+   end
+   manager.default_strategies(:scope => :user).unshift :my_app_oauth
+ end
+ Warden::OAuth.access_token_user_finder(:my_app) do |access_token|
+   if @user = User.find_by_email(access_token.params[:user_email])
+       @user
+   else
+       User.create!(:email => access_token.params[:user_email], :password => Devise.friendly_token[0,20])
+   end
+ end
+Добавьте в config/initializers/oauth_consumers.rb определение своего сервиса, взяв APP_KEY и APP_SECRET из данных клиент приложения в серверном приложении
+ :my_service => {
+   :key => APP_KEY,
+   :secret => APP_SECRET
+ }
+Добавьте ссылку на получение пользовательской сессии с помощью серверного приложения:
+ <%= link_to 'Log in via My_app', new_user_session_path(:warden_oauth_provider => 'my_app') %>
