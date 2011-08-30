@@ -45,9 +45,9 @@ Gemfile:
  require 'warden_oauth'
  config.warden do |manager|
    manager.oauth(:my_app) do |my_app|
-     my_app.consumer_secret = 'KWkmOA6tk3B5k3FysUmD9I1TZOGdC3b26eCmXHGJ'
-     my_app.consumer_key  = 'c2MNL9nMvK6YCc8HxY8DanrPRcOg1S4ZC5xEbaM5'
-     my_app.options :site => 'http://localhost:3000'
+     my_app.consumer_secret = APP_KEY
+     my_app.consumer_key  = APP_SECRET
+     my_app.options :site => 'http://server_application_url'
    end
    manager.default_strategies(:scope => :user).unshift :my_app_oauth
  end
