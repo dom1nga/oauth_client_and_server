@@ -40,6 +40,7 @@ Gemfile:
 на
  before_filter :login_or_oauth_required, :only=>:index
 Раскомментируйте определения logged_in? и def current_user=
+
 Добавьте в config/initializers/devise.rb данные полученные от серверного приложения:
  require 'warden_oauth'
  config.warden do |manager|
