@@ -10,7 +10,9 @@ class ApplicationController < ActionController::Base
       @user ||= current_user
       @access_token ||= OAuth::AccessToken.new(@client_application)
     else
-      redirect_to new_user_session_path
+      authenticate_user!
+      @user ||= current_user
+      @access_token ||= OAuth::AccessToken.new(@client_application)
     end
   end
 
