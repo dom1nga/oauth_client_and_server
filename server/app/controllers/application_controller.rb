@@ -6,14 +6,9 @@ class ApplicationController < ActionController::Base
   end
 
   def login_required
-    if user_signed_in?
-      @user ||= current_user
-      @access_token ||= OAuth::AccessToken.new(@client_application)
-    else
-      authenticate_user!
-      @user ||= current_user
-      @access_token ||= OAuth::AccessToken.new(@client_application)
-    end
+    authenticate_user!
+    @user ||= current_user
+    @access_token ||= OAuth::AccessToken.new(@client_application)
   end
 
 end
