@@ -16,8 +16,7 @@
 * Перейдите по адресу http://адрес_серверного_приложения/oauth_clients/new
 * Зарегестрируйте клиент-приложение
 * Используйте данные на странице приложения для настройки клиентского приложения
-==Отключение перехода на страницу oauth_authorize_access в конфигурации приложения
-Добавьте в config/application.rb
+==Отключение перехода на страницу oauth_authorize_access в config/application.rb
  config.disable_oauth_authorize_access_page = true
 
 =Настройка клиента:
